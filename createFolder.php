@@ -12,7 +12,4 @@ echo '<br>';
 echo 'This is Path : '.$path;
 
 
-
-
-
 header("location:$path");

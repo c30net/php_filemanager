@@ -14,6 +14,7 @@
             overflow: hidden;
             border-radius: 10px;
             float: left;
+            z-index = 0;
         }
 
         .icon:hover {
@@ -59,12 +60,35 @@
             max-height: 30px;
             overflow: hidden;
         }
+
+        .iconRemove {
+            float: left;
+            background: transparent url("images/remove_icon.png") no-repeat scroll 0% 0%;
+            width: 16px;
+            height: 16px;
+            margin: 0px auto;
+            text-align: center;
+            margin-left: 22px;
+        }
+
+        .iconRename {
+            float: left;
+            background: transparent url("images/rename_icon.png") no-repeat scroll 0% 0%;
+            width: 16px;
+            height: 16px;
+            margin: 0px auto;
+            text-align: center;
+            margin-left: 5px;
+        }
+        .uploadBox {
+            margin: 10px;
+            padding: 10px;
+            background-color: aqua;
+        }
     </style>
 
 </head>
 <body>
-
-
 <?php
 
 if(isset($_GET['dir']) && !empty($_GET['dir'])){
@@ -74,9 +98,18 @@ if(isset($_GET['dir']) && !empty($_GET['dir'])){
 }
 
 $fileList = glob("$currentDir*");
+?>
+<div class="uploadBox">
+    <form action="doUpload" method="post" enctype="application/x-www-form-urlencoded" >
+        <label for="uploader"></label>
+        <input type="file" name="myFile" id="uploader">
+        <input type="text" name="myPath" value="<?php echo $currentDir; ?>">
+        <input type="submit" value="upload this" name="submit">
+    </form>
+</div>
+<br>
 
-
-
+<?php
 
 //==============================================TODO back to parent directory ============================
 
@@ -96,6 +129,8 @@ foreach ($fileList as $currentFile) {
     if (is_dir($currentFile)) {
         echo "<a href='?dir=$currentFile'>";
             echo "<div class='icon'>";
+            echo "<div class='iconRemove' onclick='removeThis(\"$currentFile\"); return false;'></div>";
+            echo "<div class='iconRename' onclick='renameThis(\"$currentFile\"); return false;'></div>";
                 echo "<div class='iconImageFolder'></div>";
                 echo "<div class='iconTitle'>" . str_replace($currentDir, '', $currentFile) . "</div>";
             echo "</div>";
@@ -116,8 +151,6 @@ echo "<div class='iconImageNewfolder'></div>";
 echo "<div class='iconTitle'>+</div>";
 echo "</div>";
 echo "</a>";
-
-
 ?>
 
     <script>
@@ -129,6 +162,23 @@ echo "</a>";
                 alert('Please Enter A Name in Box');
             }else{
                window.location = "createFolder.php?dir=<?php echo $currentDir; ?>&newFolderName="+folderName;
+            }
+        }
+
+        function renameThis(fileName){
+            var newName = prompt("Please enter your new name", "");
+            if(newName == null){
+                return false;
+            } else if (newName == ''){
+                alert("Please Enter a new Name in the box");
+                return false;
+            } else {
+                window.location = "rename.php?dir=<?php echo $currentDir ?>&fileName="+fileName+"&newName="+newName;
+            }
+        }
+        function removeThis(fileName){
+            if(fileName != ''){
+                window.location = 'remove.php?dir=<?php echo $currentDir; ?>&fileName='+fileName;
             }
         }
     </script>
